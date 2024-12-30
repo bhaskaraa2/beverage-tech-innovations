@@ -1,0 +1,55 @@
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    networks:
+      - app-network
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  broker:
+    image: confluentinc/cp-kafka:latest
+    container_name: broker
+    networks:
+      - app-network
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+  deltalake:
+    build:
+      context: ./docker/delta-lake
+    networks:
+      - app-network
+    ports:
+      - "8888:8888"
+    depends_on:
+      - minio
+      - broker
+
+  minio:
+    image: minio/minio
+    networks:
+      - app-network
+    ports:
+      - "9000:9000"
+    volumes:
+      - minio-data:/data
+    environment:
+      MINIO_ROOT_USER: minioadmin1
+      MINIO_ROOT_PASSWORD: minioadmin1
+    command: server /data
+volumes:
+  minio-data:
+
+networks:
+  app-network:
