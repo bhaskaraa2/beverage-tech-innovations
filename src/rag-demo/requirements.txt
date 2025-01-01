@@ -1,0 +1,46 @@
+llama-index
+langchain
+pandas
+numpy
+python-dotenv
+uuid
+# LLM providers
+ollama
+openai
+llama-index-llms-ollama
+llama-index-embeddings-huggingface
+langchain-ollama
+langgraph
+# Vector stores
+chromadb
+faiss-cpu
+
+# Data processing
+pyarrow
+polars
+
+# API and web
+fastapi
+uvicorn
+pydantic
+
+# Visualization
+plotly
+matplotlib
+
+# Testing
+pytest
+pytest-cov
+
+# Development tools
+black
+isort
+flake8
+
+# Monitoring
+prometheus-client
+grafana-client
+
+
+# Optional dependencies
+jupyter
